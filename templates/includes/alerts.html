@@ -1,0 +1,14 @@
+<!--Customizing The Alert Form, ul was for the boolean thingy, rest should be comprehensible-->
+<!--This is all bootstrap so you'won't understand it, unless you know it-->
+{% if messages %}
+    {% for message in messages %}
+    <div id="message" class="container">
+    <div {% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>
+        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times</span></button>
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}{% endif %}
+            {{ message|linebreaksbr }}
+    </div>
+    </div>
+    {% endfor %}
+{% endif %}
+<!--To add a fadeout after a certain number of seconds, go to static/js/script.js and write the code that I put in there-->

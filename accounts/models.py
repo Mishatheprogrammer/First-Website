@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 # Create your models here.
 class MyAccountManager(BaseUserManager):
-    def create_user(self, email, username, first_name, last_name, password=None):
+    def create_user(self, email, username, first_name, last_name, phone_number, password=None):
         if not email:
             raise ValueError("Email Address is REQUIRED!😑")
         if not username:
@@ -17,7 +17,8 @@ class MyAccountManager(BaseUserManager):
             email=self.normalize_email(email), # will lowercase the email
             username=username,
             first_name=first_name,
-            last_name=last_name
+            last_name=last_name,
+            phone_number = phone_number,
         )
         # once this is done, we can set up the password
         user.set_password(password)
@@ -27,13 +28,14 @@ class MyAccountManager(BaseUserManager):
 
 
 
-    def create_superuser(self, email, username, first_name, last_name, password=None):
+    def create_superuser(self, email, username, first_name, last_name, phone_number, password=None):
         user = self.create_user(
             email = self.normalize_email(email),
             username = username,
             first_name = first_name,
             password=password,
-            last_name = last_name
+            last_name = last_name,
+            phone_number = phone_number,
         )
         user.is_superadmin = True
         user.is_admin = True
@@ -50,6 +52,7 @@ class Account(AbstractBaseUser):
     username = models.CharField(max_length=50, unique=True)
     # Charfield stores strings which you can use to store usernames
     email = models.EmailField(max_length=100, unique=True)
+    phone_number = models.CharField(max_length=100, unique=True)
 
 
     # required status fields
@@ -57,12 +60,12 @@ class Account(AbstractBaseUser):
     last_login = models.DateTimeField(auto_now_add=True)
     is_admin = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     is_superadmin = models.BooleanField(default=False)
 
     # log in methods
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name', 'phone_number']
 
     def __str__(self):
         return self.email

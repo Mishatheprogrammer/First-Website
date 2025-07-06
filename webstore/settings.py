@@ -136,3 +136,22 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+from django.contrib.messages import constants as messages
+
+MESSAGE_TAGS = {
+    messages.ERROR: "danger",
+    }
+# SMPT(Simple Mail Transfer Protocol) Configuratio
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587 
+# tells Django to use port 587 for SMTP email sending,
+# which is secure and works with most email providers like Gmail.
+# https://support.google.com/accounts/answer/185833?hl=en
+EMAIL_HOST_USER = 'bykov.michael2009@gmail.com'
+EMAIL_HOST_PASSWORD = ''
+EMAIL_USE_TLS = True
+# If you just want to test email sending locally, 
+# you can use Django’s console backend
+# This will print emails to your terminal instead of sending them.
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

@@ -57,4 +57,10 @@ $(document).ready(function() {
     
 }); 
 // jquery end
+setTimeout(function(){
+    $('#message').fadeOut('slow')
+}, 5000) // your miliseconds after the comma
 
+// To apply it on your web-page click 'Inspect Page' of your website and then right-click on the 'Refresh' button
+// Then press 'Empty cache and hard reload', now register a user and it should work
+// Because what you did is your updated jQuery
