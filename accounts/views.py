@@ -4,7 +4,9 @@ from .forms import RegistrationForm
 from .models import Account
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-
+from carts.views import _cart_id
+from carts.models import Cart, CartItem
+import requests # I will use it, don't fret
 
 # Verification Email
 from django.contrib.sites.shortcuts import get_current_site
@@ -82,9 +84,62 @@ def login(request):
 
         user = auth.authenticate(email=email, password=password)
         if user != None:
+            # Making sure user's items save after he logins that way cart is not reset
+            try:
+                cart = Cart.objects.get(cart_id=_cart_id(request))# import it from carts.views import _cart_id
+                is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
+                if is_cart_item_exists:
+                    cart_item = CartItem.objects.filter(cart=cart)# cart contains session id
+# Getting the Product variations by id above
+                    product_variation = []
+                    for item in cart_item:
+                        variation = item.variations.all()
+                        product_variation.append(list(variation))
+# Getting the cart items from the user to access his product variation list, we just wanna see if it exists or not
+                    cart_item = CartItem.objects.filter(user=user)
+                    ex_variation_list = []
+                    item_id = []
+                    for i in cart_item:
+                        existing_variation = i.variations.all()
+                        ex_variation_list.append(list(existing_variation))
+                        item_id.append(i.id)
+# Now we have to see the product variation inside our existing variation list, if we find a match then we need to add it
+                    for pr in product_variation:
+                        if pr in ex_variation_list:
+                            index = ex_variation_list.index(pr)
+                            item_variation_id = item_id[index]
+                            item = CartItem.objects.get(id=item_variation_id)
+                            item.quantity += 1
+                            item.user = user # we are assigning the item to the user
+                            item.save()
+                        # if doesn't find a match just adds a new variation
+                        else:
+                            cart_item = CartItem.objects.filter(cart=cart)
+                            for item in cart_item:
+                                item.user = user
+                                item.save()
+
+
+            except:
+                pass
+            #logging in below
             auth.login(request, user)
             messages.success(request, "You have successfully logged in!😎")
-            return redirect('dashboard')
+            # using the request library we will redirect the user to the next page from where he logged in, cart - - > checkout, store - - > dashboard, etc.
+            # old code just sent to the dashboard when logged in: return redirect('dashboard')
+            url = request.META.get('HTTP_REFERER')
+            try:
+                query = requests.utils.urlparse(url).query
+                # next=/cart/checkout/
+                params = dict(x.split('=') for x in query.split('&'))
+                # query - - >next=/cart/checkout/
+                # params - - - > {'next': '/cart/checkout/'}
+                # after we have the value of the keys = and & we need to redirect the user to those values, cart/checkout
+                if 'next' in params:
+                    nextPage = params['next']
+                    return redirect(nextPage)
+            except:
+                return redirect('dashboard')
         else:
             messages.error(request, "Credentials Do Not Match!🤡\nPlease Try Again or Register below")
             return redirect('login')
