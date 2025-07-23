@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'accounts',
     'store',
     'carts',  # Ensure carts app is included
+    'orders',
 ]
 
 MIDDLEWARE = [

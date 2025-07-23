@@ -1,0 +1,27 @@
+/* Here I will put in my awesome styles from the internet, hehe */
+<style>
+  /* 1. Create a multi-color gradient and clip it to text */
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      #ff0057,
+      #ffba00,
+      #00ffba,
+      #0057ff,
+      #ba00ff
+    );
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+    animation: shimmer 3s ease-in-out infinite;
+  }
+
+  /* 2. Animate the gradient’s position */
+  @keyframes shimmer {
+    0%   { background-position: 0%   50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0%   50%; }
+  }
+</style>
