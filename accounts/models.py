@@ -70,6 +70,9 @@ class Account(AbstractBaseUser):
     def __str__(self):
         return self.email
 
+    def full_name(self):
+        return f'{self.first_name.capitalize()} {self.last_name.capitalize()}'
+
     def has_perm(self, perm, obj=None): # must mention when creating custom user models
         return self.is_admin
     

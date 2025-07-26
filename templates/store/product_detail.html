@@ -4,7 +4,36 @@
 {% block content %}
 
 <section class="section-content padding-y bg">
+<!---Our shimmering style which I found on internet!!!!!-->
+<style>
+  /* 1. Create a multi-color gradient and clip it to text */
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      #d8c902,
+      #dc1c46,
+	  #ba00ff,
+      #f2a1d6,
+      #ff00e6
+
+    );
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+    animation: shimmer 4s ease-in-out infinite;
+  }
+
+  /* 2. Animate the gradient’s position */
+  @keyframes shimmer {
+    0%   { background-position: 0%   50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0%   50%; }
+  }
+</style>
 <div class="container">
+
 
 <!-- ============================ COMPONENT 1 ================================= -->
 <div class="card">
@@ -23,6 +52,18 @@
 			<article class="content-body">
 
 				<h2 class="title">{{ single_product.product_name }}</h2>
+
+				<div class="rating-star"> <!--go to the custom.css and add styles for this class .rating-star i{color: your_color !important;}-->
+					<span>
+					<i class="fa fa-star{% if single_product.averageReview >= 0.75 %}{% elif single_product.averageReview >= 0.5 %}-half-o{% else %}-o{% endif %}" aria-hidden="true"></i>
+					<i class="fa fa-star{% if single_product.averageReview >= 1.75 %}{% elif single_product.averageReview >= 1.5 %}-half-o{% else %}-o{% endif %}" aria-hidden="true"></i>
+					<i class="fa fa-star{% if single_product.averageReview >= 2.75 %}{% elif single_product.averageReview >= 2.5 %}-half-o{% else %}-o{% endif %}" aria-hidden="true"></i>
+					<i class="fa fa-star{% if single_product.averageReview >= 3.75 %}{% elif single_product.averageReview >= 3.5 %}-half-o{% else %}-o{% endif %}" aria-hidden="true"></i>
+					<i class="fa fa-star{% if single_product.averageReview >= 4.75 %}{% elif single_product.averageReview >= 4.5 %}-half-o{% else %}-o{% endif %}" aria-hidden="true"></i>
+					( {{ single_product.averageReview|floatformat:2 }} )
+					</span>
+				</div>
+				<h6 class="shimmer">Total reviews: {{ single_product.countReviews }}</h6>
 
 				<div class="mb-3"> 
 					<var class="price h4">${{ single_product.price }}</var> 
@@ -66,7 +107,7 @@
 
 					{% else %}
 
-						<button type='submit' class="btn  btn-success"> <span class="text">Add To Cart 🔥 </span> <i class="fas fa-shopping-cart"></i>  </button>
+						<button type='submit' class="btn  btn-danger"> <span class="text">Add To Cart 🔥 </span> <i class="fas fa-shopping-cart"></i>  </button>
 						<a href="{% url 'add_cart' single_product.id %}" class="btn  btn-primary"> <span class="text">View Your Snazzy Cart 😏 </span> <i class="fas fa-eye"></i>  </a>
 
 
@@ -84,28 +125,90 @@
 <div class="row">
 			<div class="col-md-9">
 
-	<header class="section-heading">
-		<h3>Customer Reviews </h3>  
-		
-	</header>
 
+	<form action="{% url 'submit_review' single_product.id %}" method="POST">
+		{% csrf_token %}
+		<h5>Write Your Review ⤵</h5>
+		<div>
+			<!--Rating stars-->
+			<label>How do you rate this product?</label>
+			<br>
+			<div class="rate">
+				<input type="radio" name="rating" id="rating10" value="5" required /><label for="rating10" title="5 (Excellent)"></label>
+				<input type="radio" name="rating" id="rating9" value="4.5" required /><label for="rating9" title="4.5 (Astounding)" class="half"></label>
+				<input type="radio" name="rating" id="rating8" value="4" required /><label for="rating8" title="4 (Impressive)"></label>
+				<input type="radio" name="rating" id="rating7" value="3.5" required /><label for="rating7" title="3.5 (Remarkable)" class="half"></label>
+				<input type="radio" name="rating" id="rating6" value="3" required /><label for="rating6" title="3 (Good)"></label>
+				<input type="radio" name="rating" id="rating5" value="2.5" required /><label for="rating5" title="2.5 (Needs Work)" class="half"></label>
+				<input type="radio" name="rating" id="rating4" value="2" required /><label for="rating4" title="2 (Poor)"></label>
+				<input type="radio" name="rating" id="rating3" value="1.5" required /><label for="rating3" title="1.5 (Terrible)" class="half"></label>
+				<input type="radio" name="rating" id="rating2" value="1" required /><label for="rating2" title="1 (Awful)"></label>
+				<input type="radio" name="rating" id="rating1" value="0.5" required /><label for="rating1" title="0.5 (Horrendous)" class="half"></label>
+			</div>
+			<br>
+
+			Review Title:
+			<input type="text" class="form-control" name="subject">
+			<br>
+			Review:
+			<textarea name="review" class="form-control" rows="4"></textarea>
+			<br>
+			{% if user.is_authenticated %}
+				{% if order_product %}
+					<input type="submit" value="Submit YOUR Review" class="form-control shimmer">
+				{% else %}
+					<p class="text-center shimmer">You can only post review for the products you have purchased. Haha! Eat that!</p>
+				{% endif %}
+			{% else %}
+			<p>You must be logged in to post a review. <span><a href="{% url 'login' %}">Login Now!</a></span></p>
+			{% endif %}
+		</div>
+{% include 'includes/alerts.html' %}
+	</form>
+	<br>
+	<br>
+<header class="section-heading">
+	<h3>Customer Reviews </h3>  
+	<p>Average Rating: {{single_product.averageReview|floatformat:2}} stars</p>
+	<div class="rating-star"> <!--go to the custom.css and add styles for this class .rating-star i{color: your_color !important;}-->
+		<i class="fa fa-star{% if single_product.averageReview >= 0.75 %}{% elif single_product.averageReview >= 0.5 %}-half-o{% else %}-o{% endif %}" aria-hidden="true"></i>
+		<i class="fa fa-star{% if single_product.averageReview >= 1.75 %}{% elif single_product.averageReview >= 1.5 %}-half-o{% else %}-o{% endif %}" aria-hidden="true"></i>
+		<i class="fa fa-star{% if single_product.averageReview >= 2.75 %}{% elif single_product.averageReview >= 2.5 %}-half-o{% else %}-o{% endif %}" aria-hidden="true"></i>
+		<i class="fa fa-star{% if single_product.averageReview >= 3.75 %}{% elif single_product.averageReview >= 3.5 %}-half-o{% else %}-o{% endif %}" aria-hidden="true"></i>
+		<i class="fa fa-star{% if single_product.averageReview >= 4.75 %}{% elif single_product.averageReview >= 4.5 %}-half-o{% else %}-o{% endif %}" aria-hidden="true"></i>
+	</div>
+	<h6 class="shimmer">Total reviews: {{ single_product.countReviews }}</h6>
+
+</header>
+
+{% for review in reviews %}
 	<article class="box mb-3">
 		<div class="icontext w-100">
-			<img src="./images/avatars/avatar1.jpg" class="img-xs icon rounded-circle">
+			<!--<img src="#" class="img-xs icon rounded-circle">-->
+
 			<div class="text">
-				<span class="date text-muted float-md-right">24.04.2020 </span>  
-				<h6 class="mb-1">Mike John </h6>
+				<span class="date text-muted float-md-right">{{review.updated_date}}</span>  
+				<h6 class="mb-1">{{review.user.full_name}}</h6>
+
+				<!--Showing the stars dynamically, FontAwesome for icons-->
+				<div class="rating-star"> <!--go to the custom.css and add styles for this class .rating-star i{color: your_color !important;}-->
+					<i class="fa fa-star{% if review.rating == 0.5 %}-half-o{% elif review.rating < 1 %}-o{% endif %}" aria-hidden="true"></i>
+					<i class="fa fa-star{% if review.rating == 1.5 %}-half-o{% elif review.rating < 2 %}-o{% endif %}" aria-hidden="true"></i>
+					<i class="fa fa-star{% if review.rating == 2.5 %}-half-o{% elif review.rating < 3 %}-o{% endif %}" aria-hidden="true"></i>
+					<i class="fa fa-star{% if review.rating == 3.5 %}-half-o{% elif review.rating < 4 %}-o{% endif %}" aria-hidden="true"></i>
+					<i class="fa fa-star{% if review.rating == 4.5 %}-half-o{% elif review.rating < 5 %}-o{% endif %}" aria-hidden="true"></i>
+				</div>
 				
 			</div>
 		</div> <!-- icontext.// -->
 		<div class="mt-3">
+			<h6>{{review.subject}}</h6>
 			<p>
-				Dummy comment Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-				tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-				quis nostrud exercitation ullamco laboris nisi ut aliquip
+				{{review.review}}
 			</p>	
 		</div>
 	</article>
+{% endfor %}
 
 	
 

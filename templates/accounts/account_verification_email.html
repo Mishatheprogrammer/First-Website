@@ -10,4 +10,5 @@ http://{{domain}}{% url 'activate' uidb64=uid token=token %}
 If you think it's not you, please, ignore this email!🤗
 
 {% endautoescape %}
-<!---We are yet to create an 'activate' url-->
+<!--This autoescape is the safest way of rendering templates in emails-->
+<!--It is a protection from Cross Site Scripting-->
