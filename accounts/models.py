@@ -79,3 +79,23 @@ class Account(AbstractBaseUser):
     def has_module_perms(self, add_label): # must always be true
         return True
     objects = MyAccountManager() # this is the custom user manager we created above
+
+# making a user profile model for editing the profile and extend the functionality scope
+class UserProfile(models.Model):
+    # only may have one account for this key, "only one profile for one user"
+    user = models.OneToOneField(Account, on_delete=models.CASCADE)
+    address_line_1 = models.CharField(blank=True, max_length=67)
+    address_line_2 = models.CharField(max_length=67, blank=True)
+    profile_picture = models.ImageField(blank=True, upload_to='userprofile/', default='userprofile/default.jpg')  # Path relative to your MEDIA_ROOT
+    city = models.CharField(max_length=67, blank=True)
+    state = models.CharField(max_length=67, blank=True)
+    country = models.CharField(max_length=67, blank=True)
+
+    def __str__(self):
+        return self.user.first_name
+    
+    def full_name(self):
+        return f'{self.user.first_name} {self.user.last_name}'
+
+    def full_address(self):
+        return f'{self.address_line_1} {self.address_line_2}'

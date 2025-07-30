@@ -11,6 +11,7 @@ class OrderAdmin(admin.ModelAdmin):
     list_display = ['full_name', 'order_number', 'email', 'city', 'country', 'order_total', 'tax', 'status', 'is_ordered', 'created_at']
     list_filter = ['status', 'is_ordered']
     search_fields = ['order_number', 'first_name', 'last_name', 'phone', 'email']
+    list_editable = ['is_ordered']
     list_per_page = 21
     inlines = [OrderProductInline] # this will put in another class into your model
 

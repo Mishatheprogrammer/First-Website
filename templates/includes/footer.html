@@ -19,3 +19,16 @@
 	</div><!-- //container -->
 </footer>
 <!-- ========================= FOOTER END // ========================= -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+	// Your custom JavaScript code can go here
+	$(document).ready(function(){
+		$('.thumb a').click(function(e){
+			e.preventDefault(); //preventin opening an image in a new tab
+			$('.mainImage img').attr('src', $(this).attr("href"));
+			// when document is ready and we click on class="thumb" <a> we are opening the image inside image container
+		})
+	})
+</script>
+</body>
+</html>

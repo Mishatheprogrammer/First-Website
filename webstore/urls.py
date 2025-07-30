@@ -22,10 +22,16 @@ from django.conf.urls.static import static
 from django.urls import include
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    # path('admin/', include('admin_honeypot.urls', namespace='admin_honeypot')), not supported
+    # watch the django-admin-honeypoot GitHub for Djago 4/5 support
+    path('secure_login_of_the_admin_administrator_of_django_blah-blah-blah/', admin.site.urls),
     path('', views.home, name='home'),
+    path('contact_us/', views.contact_us, name='contact_us'),
+    path('about/', views.about, name='about'),
     path('store/', include('store.urls')),
     path('cart/', include('carts.urls')),
     path('accounts/', include('accounts.urls')),
     path('orders/', include('orders.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# install django-session-timeout to log out user after inactivity
+# just watch the documentation on pypi.or/project/django-session-timeout/

@@ -47,6 +47,8 @@ class Order(models.Model):
     is_ordered = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now=True)
+    def order_number_integer(self):
+        return int(self.order_number)
 
     def full_address(self):
         return f'{self.address_line_1}; {self.address_line_2}'

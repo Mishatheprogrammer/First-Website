@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<!---Our shimmering style which I found on internet!!!!!-->
+<style>
+  /* 1. Create a multi-color gradient and clip it to text */
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      #d8c902,
+      #dc1c46,
+	  #ba00ff,
+      #f2a1d6,
+      #ff00e6
+
+    );
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+    animation: shimmer 4s ease-in-out infinite;
+  }
+
+  /* 2. Animate the gradient’s position */
+  @keyframes shimmer {
+    0%   { background-position: 0%   50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0%   50%; }
+  }
+</style>
+  <div class="container mt-5 text-center" style="color: rgba(253, 31, 31, 0.689);">
+    <img src="{% static 'images/logo_for_first_website.jpg' %}" class="img-fluid" alt="Contact Us" style="width: 50%; height: auto;">
+    <h1>Email Us:</h1>
+    <h3 class="shimmer">temno@gmail.com</h3><br>
+    <h1>Call Us:</h1>
+    <h3 class="shimmer">1-679-888-6767</h3><br>
+    <h5 class="text-muted">If you have any questions feel free to contact us by the email or the phone number provided above.</h5>
+
+  </div>
+
+
+{% endblock %}

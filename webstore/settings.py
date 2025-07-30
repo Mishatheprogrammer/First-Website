@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config 
+# In order to make it all secure pip install python-decouple
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +22,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-*fvex(zh$hacy6!$xu^!&7n$9_t1e_$&_b^g34_tvk@^#wegei'
+# in .env
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=True, cast=bool) # now it's boolean
 
 ALLOWED_HOSTS = []
+# In order to make it all secure pip install python-decouple
+
 
 
 # Application definition
@@ -42,7 +47,10 @@ INSTALLED_APPS = [
     'store',
     'carts',  # Ensure carts app is included
     'orders',
+    #'admin_honeypot', #will bait hackers into the net
+    #Watch the django-admin-honeypot GitHub for Django 4/5 support.
 ]
+# In order to make it all secure pip install python-decouple
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -52,7 +60,13 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # time out session
+    'django_session_timeout.middleware.SessionTimeoutMiddleware',
 ]
+SESSION_EXPIRE_SECONDS = 1800  # 30 minutes
+SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
+SESSION_TIMEOUT_REDIRECT = '/accounts/login/?timeout=1'  # Redirect to login if session times out
+# leading slash because it will be an absolute path
 
 ROOT_URLCONF = 'webstore.urls'
 
@@ -72,6 +86,7 @@ TEMPLATES = [
         },
     },
 ]
+# In order to make it all secure pip install python-decouple
 
 WSGI_APPLICATION = 'webstore.wsgi.application'
 
@@ -90,6 +105,7 @@ DATABASES = {
 # Media Files Configuration
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'  # Directory where media files will be stored
+# In order to make it all secure pip install python-decouple
 
 
 
@@ -110,6 +126,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+# In order to make it all secure pip install python-decouple
 
 
 # Internationalization
@@ -122,6 +139,7 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+# In order to make it all secure pip install python-decouple
 
 
 # Static files (CSS, JavaScript, Images)
@@ -132,6 +150,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles' # Ensure static files are collected in th
 STATICFILES_DIRS = [
     BASE_DIR / 'static', # Add your static files directory here
 ]
+# In order to make it all secure pip install python-decouple
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -143,16 +162,23 @@ from django.contrib.messages import constants as messages
 MESSAGE_TAGS = {
     messages.ERROR: "danger",
     }
+# In order to make it all secure pip install python-decouple
+
+
+
 # SMPT(Simple Mail Transfer Protocol) Configuratio
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587 
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = config('EMAIL_PORT', cast=int)
 # tells Django to use port 587 for SMTP email sending,
 # which is secure and works with most email providers like Gmail.
 # https://support.google.com/accounts/answer/185833?hl=en
-EMAIL_HOST_USER = 'bykov.michael2009@gmail.com'
-EMAIL_HOST_PASSWORD = ''
-EMAIL_USE_TLS = True
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
+# In order to make it all secure pip install python-decouple
+
 # If you just want to test email sending locally, 
 # you can use Django’s console backend
 # This will print emails to your terminal instead of sending them.
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND='django.core.mail.backends.console.EmailBackend'
+# then include the .env file to the gitignore

@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- ========================= SECTION CONTENT ========================= -->
+<section class="section-conten padding-y bg">
+<!---Our shimmering style which I found on internet!!!!!-->
+<style>
+  /* 1. Create a multi-color gradient and clip it to text */
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      #d8c902,
+      #2cdc1c,
+	  #6d9619,
+      #08e848,
+      #07e63b
+
+    );
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+    animation: shimmer 4s ease-in-out infinite;
+  }
+
+  /* 2. Animate the gradient’s position */
+  @keyframes shimmer {
+    0%   { background-position: 0%   50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0%   50%; }
+  }
+</style>
+{% include 'includes/alerts.html' %}
+
+<div class="container">
+	<div class="row">
+	{% include 'includes/dashboard_side_bar.html' %}
+	<main class="col-md-9">
+		<article class="card">
+		<header class="card-header">
+			<strong class="d-inline-block mr-3">Your Order History:</strong>
+		</header>
+		<div class="card-body">
+			<div class="row">
+				<div class="col-md-12">
+                    <!--getbootstrap.com Tables - Hoverable Rows-->
+                    <table class="table table-hover">
+                        <thead>
+                            <tr class="text-center">
+                                <th scope="col">Order #</th>
+                                <th scope="col">Billing Name</th>
+                                <th scope="col">Email Address</th>
+                                <th scope="col">Order Total</th>
+                                <th scope="col">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                            <tr class="text-center">
+                                <th scope="row"><a href="{% url 'order_detail' order.order_number_integer %}">{{order.order_number}}</a></th>
+                                    <td>{{order.full_name}}</td>
+                                    <td>{{order.email}}</td>
+                                    <td class="shimmer">$ {{order.order_total}}</td>
+                                    <td>{{order.created_at}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+				</div>
+			</div> <!-- row.// -->
+		</div> <!-- card-body .// -->
+
+
+		</article> <!-- order-group.// --> 
+	</main>
+</div> <!-- row.// -->
+</div>
+
+
+</section>
+<!-- ========================= SECTION CONTENT END// ========================= -->
+
+
+{% endblock %}
